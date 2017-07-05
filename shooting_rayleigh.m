@@ -37,7 +37,7 @@
 
 % Example run that works to an extent:
 %
-% [x y,baseT] = shooting_rayleigh(@rayleigh,0.0030,1e-6,1,3,[0 0],'df');
+% [x y,baseT] = shooting_rayleigh(@rayleigh,0.0003,1e-6,1,3,[0 0],'df');
 %
 % It is meant that will be solved the BVP ODE described in the function
 % gotler, on the interval (1,3) with boundary conditions y'(1) = 0 and 
@@ -84,7 +84,7 @@ function [x, y, baseT] = shooting_rayleigh(rayleigh,h,zero,a,b,con,...
     % Now iterate solution outwards using Rk method 
     
     [~, F1] = RK(a,b,h,a1,rayleigh,baseT,baseTdash,baseU,baseUdash,...
-        alpha,ktilde,M,c);
+        alpha,ktilde,M,c)
     [x, F2] = RK(a,b,h,a2,rayleigh,baseT,baseTdash,baseU,baseUdash,...
         alpha,ktilde,M,c);         
     
