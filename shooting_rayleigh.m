@@ -6,7 +6,7 @@
 
 % This code implements the shooting method for solving 1D boundary value 
 % problem. It uses the Runge-Kutta method of 4th order for solving the 
-% ODE and the interval bisection method for finding the alpha parameter. 
+% ODE and the interval bisection method for finding the parameter. 
 
 % The meaning of input and output parameters: 
 %
@@ -15,10 +15,11 @@
 % y - 2D array, values of function (solution) are in first row, values 
 % of 1st derivative are in second row
 %
-% rayleigh - the function handle, fun contains system of solved 
+% rayleigh - the function handle, contains system of solved 
 % differential equations
 %
-% h - the step of the Runge-Kutta method (the step of the grid)            
+% h - the step of the Runge-Kutta method (the step of the grid)
+%
 % zero - the interval bisection method accuracy
 %
 % con - values of boundary conditions (2D vector)
@@ -28,7 +29,7 @@
 % derivative), e.g 'fd' is meant that in a point the condition is
 % related to function and in the b point to derivative
 %
-% init - 2D vector of initial alpha parameters, it is not required, the 
+% init - 2D vector of initial parameters, it is not required, the 
 % implicit value is [-10 10]
 
 % The ploting of the solution:
@@ -37,7 +38,7 @@
 
 % Example run that works to an extent:
 %
-% [x y,baseT] = shooting_rayleigh(@rayleigh,0.003,1e-6,1,3,[0 0],'df');
+% [x y,baseT] = shooting_rayleigh(@rayleigh,0.0006,1e-6,1,7,[0 0],'df');
 %
 % It is meant that will be solved the BVP ODE described in the function
 % gotler, on the interval (1,3) with boundary conditions y'(1) = 0 and 
@@ -53,7 +54,7 @@ function [x, y, baseT] = shooting_rayleigh(rayleigh,h,zero,a,b,con,...
     gamma=1.4; Pr=1; C=0.509;
     D=1; % Fitting parameter for base flow 
     eta=1; % Chosen matching point or left boundary 
-    alpha=1; ktilde=1; M=10; c=-0.993937;
+    alpha=1; ktilde=1; M=1; c=-0.993937;
     
     % Solve for the base flow 
     
@@ -149,7 +150,7 @@ function [x, y, baseT] = shooting_rayleigh(rayleigh,h,zero,a,b,con,...
     set(l1, 'Interpreter','LaTex','Fontsize',30);
     ylabel('Pres. in the temp. adj. region $p$','Interpreter', 'LaTex','Fontsize',40)
     xlabel('D.H. variable, $\eta$','Interpreter', 'LaTex','Fontsize',40)
-    xlim([1,3])
+    xlim([1,7])
     grid on
     hold off;
     toc
