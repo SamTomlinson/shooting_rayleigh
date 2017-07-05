@@ -154,5 +154,4 @@ function [x, y, baseT] = shooting_rayleigh(rayleigh,h,zero,a,b,con,...
     grid on
     hold off;
     toc
-    
 end
