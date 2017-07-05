@@ -1,2 +1,2 @@
-# shooting_gotler
-Codes for shooting method for Gotler stability equation
+# shooting_rayleigh
+Codes for shooting method for rayleigh stability equation
