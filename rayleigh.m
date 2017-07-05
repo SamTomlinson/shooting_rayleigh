@@ -1,7 +1,6 @@
-function vecq = gotler(~,q,baseT,baseTdash,baseU,kappa,betag,~,~,sigma)
+function vecq = rayleigh(~,q,baseT,~,baseU,baseUdash,alpha,ktilde,M,c)
     vecq(1) = q(2);
-    vecq(2) = q(2)*baseTdash./baseT ...
-        + ((baseT^(-2)).*betag.*q(1) + ...
-        (0.5*kappa*(baseU^2)-trapz(baseT))*(baseTdash*betag/sigma))*q(1);
+    vecq(2) = -2*baseUdash*q(2)/(baseU-0*c) ...
+        + ktilde^2*baseT*(baseT-alpha^2*M^2*(baseU-0*c)^2/ktilde^2)*q(1);
     
     
