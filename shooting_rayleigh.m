@@ -54,7 +54,7 @@ function [x, y, baseT] = shooting_rayleigh(rayleigh,h,zero,a,b,con,...
     gamma=1.4; Pr=1; C=0.509;
     D=1; % Fitting parameter for base flow 
     eta=1; % Chosen matching point or left boundary 
-    alpha=1; ktilde=1; M=1; c=-0.993937;
+    alpha=1; ktilde=0.64; M=1; c=-0.993937;
     
     % Solve for the base flow 
     
