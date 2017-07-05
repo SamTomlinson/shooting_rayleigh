@@ -15,7 +15,7 @@
 % y - 2D array, values of function (solution) are in first row, values 
 % of 1st derivative are in second row
 %
-% gotler - the function handle, fun contains system of solved 
+% rayleigh - the function handle, fun contains system of solved 
 % differential equations
 %
 % h - the step of the Runge-Kutta method (the step of the grid)            
@@ -37,15 +37,15 @@
 
 % Example run that works to an extent:
 %
-% [x y,baseT] = shooting_gotler(@gotler,0.0030,1e-6,1,3,[0 0],'ff');
+% [x y,baseT] = shooting_rayleigh(@rayleigh,0.0030,1e-6,1,3,[0 0],'df');
 %
 % It is meant that will be solved the BVP ODE described in the function
-% gotler, on the interval (1,3) with boundary conditions y(1) = 0 and 
+% gotler, on the interval (1,3) with boundary conditions y'(1) = 0 and 
 % y(3) = 0 to a tolerance of 1e-6.
 
 % Function for output of eigenfuntion
 
-function [x, y, baseT] = shooting_gotler(gotler,h,zero,a,b,con,...
+function [x, y, baseT] = shooting_rayleigh(rayleigh,h,zero,a,b,con,...
     type,init) 
 
     % Parameters and base flow should really be put into funtion 
@@ -53,11 +53,11 @@ function [x, y, baseT] = shooting_gotler(gotler,h,zero,a,b,con,...
     gamma=1.4; Pr=1; C=0.509;
     D=1; % Fitting parameter for base flow 
     eta=1; % Chosen matching point or left boundary 
-    betag=1; Gstar=2; Q=1; sigma=1; kappa=1;
+    alpha=1; ktilde=1; M=10; c=-0.993937;
     
     % Solve for the base flow 
     
-    [x,baseT,baseTdash,baseU]= baseflow(C,Pr,D,eta);
+    [x,baseT,baseTdash,baseU,baseUdash]= baseflow(C,Pr,D,eta);
 
     tic; % Begin time
     
@@ -67,7 +67,7 @@ function [x, y, baseT] = shooting_gotler(gotler,h,zero,a,b,con,...
     if nargin == 8
         shoot1 = init(1); shoot2 = init(2);
     else
-        shoot1 = -20; shoot2 = 10;
+        shoot1 = -5; shoot2 = 10;
     end
     
     % Sets up boundary condition vectors, with the first entries being
@@ -83,10 +83,10 @@ function [x, y, baseT] = shooting_gotler(gotler,h,zero,a,b,con,...
     
     % Now iterate solution outwards using Rk method 
     
-    [x, F1] = RK(a,b,h,a1,gotler,baseT,baseTdash,baseU,kappa,betag,...
-        Gstar,Q,sigma); 
-    [x, F2] = RK(a,b,h,a2,gotler,baseT,baseTdash,baseU,kappa,betag,...
-        Gstar,Q,sigma);         
+    [~, F1] = RK(a,b,h,a1,rayleigh,baseT,baseTdash,baseU,baseUdash,...
+        alpha,ktilde,M,c);
+    [x, F2] = RK(a,b,h,a2,rayleigh,baseT,baseTdash,baseU,baseUdash,...
+        alpha,ktilde,M,c);         
     
     if (type(2)=='f')
         F1 = F1(1,end) - con(2);
@@ -125,8 +125,8 @@ function [x, y, baseT] = shooting_gotler(gotler,h,zero,a,b,con,...
            a3 = [shoot3 con(1)];            
         end           
         
-        [x, F3] = RK(a,b,h,a3,gotler,baseT,baseTdash,baseU,kappa,...
-            betag,Gstar,Q,sigma);
+        [x, F3] = RK(a,b,h,a3,rayleigh,baseT,baseTdash,baseU,baseUdash,...
+            alpha,ktilde,M,c);
         
         y = F3; F3 = F3(r,end) - con(2); 
         if (F1*F3 < 0)
@@ -136,6 +136,7 @@ function [x, y, baseT] = shooting_gotler(gotler,h,zero,a,b,con,...
         else
             error('Something has gone horribly wrong, probs NANS');           
         end
+        
     end           
     
     % Plotting of solutions 
@@ -144,9 +145,9 @@ function [x, y, baseT] = shooting_gotler(gotler,h,zero,a,b,con,...
     plot(x,y(1,:),'k-','LineWidth',2); hold on; 
     plot(x,y(2,:),'r-','LineWidth',2); 
     set(gca,'Fontsize',20)
-    l1=legend('$v_0(\eta)$','$v_{0\eta}(\eta)$');
+    l1=legend('$p(\eta)$','$p_{\eta}(\eta)$');
     set(l1, 'Interpreter','LaTex','Fontsize',30);
-    ylabel('Vel. in the temp. adj. region $v_0$','Interpreter', 'LaTex','Fontsize',40)
+    ylabel('Pres. in the temp. adj. region $p$','Interpreter', 'LaTex','Fontsize',40)
     xlabel('D.H. variable, $\eta$','Interpreter', 'LaTex','Fontsize',40)
     xlim([1,3])
     grid on
