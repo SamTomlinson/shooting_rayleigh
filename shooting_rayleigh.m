@@ -37,7 +37,7 @@
 
 % Example run that works to an extent:
 %
-% [x y,baseT] = shooting_rayleigh(@rayleigh,0.0003,1e-6,1,3,[0 0],'df');
+% [x y,baseT] = shooting_rayleigh(@rayleigh,0.003,1e-6,1,3,[0 0],'df');
 %
 % It is meant that will be solved the BVP ODE described in the function
 % gotler, on the interval (1,3) with boundary conditions y'(1) = 0 and 
@@ -57,7 +57,7 @@ function [x, y, baseT] = shooting_rayleigh(rayleigh,h,zero,a,b,con,...
     
     % Solve for the base flow 
     
-    [x,baseT,baseTdash,baseU,baseUdash]= baseflow(C,Pr,D,eta);
+    [~,baseT,baseTdash,baseU,baseUdash]= baseflow(C,Pr,D,eta);
 
     tic; % Begin time
     
