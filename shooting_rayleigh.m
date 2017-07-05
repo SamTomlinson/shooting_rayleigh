@@ -38,7 +38,7 @@
 
 % Example run that works to an extent:
 %
-% [x y,baseT] = shooting_rayleigh(@rayleigh,0.0006,1e-6,1,7,[0 0],'df');
+% [x y,baseT] = shooting_rayleigh(@rayleigh,0.006,1e-6,1,7,[0 0],'df');
 %
 % It is meant that will be solved the BVP ODE described in the function
 % gotler, on the interval (1,3) with boundary conditions y'(1) = 0 and 
@@ -51,14 +51,15 @@ function [x, y, baseT] = shooting_rayleigh(rayleigh,h,zero,a,b,con,...
 
     % Parameters and base flow should really be put into funtion 
 
-    gamma=1.4; Pr=1; C=0.509;
+    gamma=1.4; Pr=1; C=0.509; Tb=1;
     D=1; % Fitting parameter for base flow 
     eta=1; % Chosen matching point or left boundary 
-    alpha=1; ktilde=0.64; M=1; c=-0.993937;
+    alpha=1; ktilde=0.3; M=1; c=-0.993937;
     
     % Solve for the base flow 
     
-    [~,baseT,baseTdash,baseU,baseUdash]= baseflow(C,Pr,D,eta);
+    [~,baseT,baseTdash,baseU,baseUdash,baseUdashdash] ...
+        = baseflow(C,Pr,D,eta);
 
     tic; % Begin time
     
@@ -85,9 +86,9 @@ function [x, y, baseT] = shooting_rayleigh(rayleigh,h,zero,a,b,con,...
     % Now iterate solution outwards using Rk method 
     
     [~, F1] = RK(a,b,h,a1,rayleigh,baseT,baseTdash,baseU,baseUdash,...
-        alpha,ktilde,M,c)
+        baseUdashdash,alpha,ktilde,M,c,gamma,Tb);
     [x, F2] = RK(a,b,h,a2,rayleigh,baseT,baseTdash,baseU,baseUdash,...
-        alpha,ktilde,M,c);         
+        baseUdashdash,alpha,ktilde,M,c,gamma,Tb);         
     
     if (type(2)=='f')
         F1 = F1(1,end) - con(2);
@@ -127,7 +128,7 @@ function [x, y, baseT] = shooting_rayleigh(rayleigh,h,zero,a,b,con,...
         end           
         
         [x, F3] = RK(a,b,h,a3,rayleigh,baseT,baseTdash,baseU,baseUdash,...
-            alpha,ktilde,M,c);
+            baseUdashdash,alpha,ktilde,M,c,gamma,Tb);
         
         y = F3; F3 = F3(r,end) - con(2); 
         if (F1*F3 < 0)
