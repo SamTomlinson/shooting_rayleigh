@@ -7,7 +7,7 @@ BC=@(za,zb)[za(1) - D/(eta^(3/Pr)) ; zb(2) ; za(2) + (3/Pr)*D/eta^((3/Pr)-1); za
     
 zint=@(x)[0 ; 1; 0 ; 1 ; 0];
     
-solint=bvpinit(linspace(1,3,1001),zint);
+solint=bvpinit(linspace(1,3,10001),zint);
     
 S=bvp4c(dydx,BC,solint);
     
