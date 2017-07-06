@@ -33,7 +33,7 @@
 %
 % flow parameters - gamma (specific heat), Pr (prandtl), C (sutherlands
 % constant), D (fitting parameter), etab (matching point for edge of
-% adjustment region)
+% adjustment region), Tb (wall temp), c (neutral phase speed)
 %
 % khat - combined wavenumber
 % 
@@ -45,7 +45,7 @@
 %                               Example                                %
 %
 % [eta, v] = shooting_rayleigh(@rayleigh,h,zero,a,b,con,type,init,khat)
-% [eta, v] = shooting_rayleigh(@rayleigh,0.006,1e-6,1,7,[0,0],'df',1);
+% [eta, v] = shooting_rayleigh(@rayleigh,0.006,1e-6,1,7,[0,0],1);
 %
 % i.e. solve bvp in gotler on [1,7] with bcs v(1)=0 and v(7)=0, 
 % tolerance 1e-6, wavenumber =1 khat=0.1
@@ -58,12 +58,11 @@
 
 
 function [eta, p] = shooting_rayleigh(rayleigh,deltaeta,tol,a,b,bcs,...
-    init,khat) 
+    khat,init) 
 
     % Parameters and base flow should really be put into funtion 
 
-    gamma=1.4; Pr=1; C=0.509; Tb=1; D=1; etab=1; M=1; c=-0.993937;
-    kappa=0.1;
+    gamma=1.4; Pr=1; C=0.509; Tb=1; D=1; etab=1; c=-0.993937;
 
      % Solve for the base flow 
     
@@ -75,7 +74,7 @@ function [eta, p] = shooting_rayleigh(rayleigh,deltaeta,tol,a,b,bcs,...
     % If my number of arguements is 8 then initial guesses gave been 
     % specified if not take these to be -1 and 1.
     
-    if nargin == 19
+    if nargin == 8
         shoot1 = init(1); shoot2 = init(2);
     else
         shoot1 = -5; shoot2 = 10;
@@ -83,8 +82,8 @@ function [eta, p] = shooting_rayleigh(rayleigh,deltaeta,tol,a,b,bcs,...
     
     % Sets up boundary condition vectors
     
-    a1 = [shoot1 bcs(1)];
-    a2 = [shoot2 bcs(1)]; 
+    a1 = [bcs(1) shoot1];
+    a2 = [bcs(1) shoot2]; 
     
    % Now iterate solution outwards using Rk method 
     
@@ -93,8 +92,8 @@ function [eta, p] = shooting_rayleigh(rayleigh,deltaeta,tol,a,b,bcs,...
     [~, F2] = RK(a,b,deltaeta,a2,rayleigh,baseT,baseTdash,baseU,...
         baseUdash,baseUdashdash,c,gamma,Tb,khat);       
     
-     F1 = F1(1,end) - bcs(2);
-     F2 = F2(1,end) - bcs(2);   
+    F1 = F1(1,end) - bcs(2);
+    F2 = F2(1,end) - bcs(2);  
     
     % Identify if as root is possible by checking for sign change
     
@@ -114,7 +113,7 @@ function [eta, p] = shooting_rayleigh(rayleigh,deltaeta,tol,a,b,bcs,...
     while (abs(F3) > tol) 
         
         % Check
-        % F3
+        F3;
         
         % Bring one shoot in half the distance between the teo
         
@@ -131,7 +130,8 @@ function [eta, p] = shooting_rayleigh(rayleigh,deltaeta,tol,a,b,bcs,...
         % Check
         % F3(r,end);
         
-        p = F3; F3 = F3(1,end) - bcs(2); 
+        p = F3;
+        F3 = F3(1,end) - bcs(2); 
         if (F1*F3 < 0)
             shoot2 = shoot3; F2 = F3;            
         elseif (F1*F3 > 0)
@@ -152,7 +152,7 @@ function [eta, p] = shooting_rayleigh(rayleigh,deltaeta,tol,a,b,bcs,...
     set(l1, 'Interpreter','LaTex','Fontsize',30);
     ylabel('Pres. in the temp. adj. region $p$','Interpreter', 'LaTex','Fontsize',40)
     xlabel('D.H. variable, $\eta$','Interpreter', 'LaTex','Fontsize',40)
-    xlim([1,7])
+    xlim([a,b])
     grid on
     hold off;
     toc

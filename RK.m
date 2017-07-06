@@ -1,5 +1,5 @@
 function [eta, p] = RK(a,b,deltaeta,bcs,rayleigh,baseT,baseTdash,baseU,...
-        baseUdash,baseUdashdash,c,gamma,Tb,khat); 
+        baseUdash,baseUdashdash,c,gamma,Tb,khat)
     
     eta = a:deltaeta:b; 
     n = length(eta);
