@@ -125,7 +125,7 @@ function [eta, p] = shooting_rayleigh(rayleigh,deltaeta,tol,a,b,bcs,...
         a3 = [bcs(1) shoot3];                      
         
         [eta, F3] = RK(a,b,deltaeta,a3,rayleigh,baseT,baseTdash,baseU,...
-        baseUdash,baseUdashdash,c,gamma,Tb,khat); 
+        baseUdash,baseUdashdash,gamma,Tb,khat); 
         
         % Check
         % F3(r,end);
