@@ -51,27 +51,23 @@ function [eta,baseU,baseUdash,baseUdashdash,solint] = ...
 gamma=1.4; Tb=1;
 c1=0.5*(gamma-1)*(Tb+1);
 
-dydx = @(eta,z)[  z(2)  ;  z(3)  ;  ...
-    ( -eta*z(3)*(C-c1*z(2)+1) )/( 2*((1-c1*z(2))^0.5) ) ...
-    +( c1*z(3) )/( 2*(1-c1*z(2)) ) - ( 2*c1*z(3) )/( 2*(C-c1*z(2)+1) )   ];
-
 dydx=@(eta,z)[   z(2)   ;   z(3)   ;   ...
-    ( -eta*z(3)*(C-c1*z(2)+1) )/( 2*(1-c1*z(2))^0.5 ) ...
-    + ( c1*z(3) )/( 2*(1-c1*z(2)) ) ...
-    - ( 2*c1*z(3) )/( C-c1*z(2)+1 )   ];
+    ( -eta*z(3)*(C-c1*z(2)+1) )/( 2*((1-c1*z(2))^0.5) ) ...
+    + ( c1*z(3)^2 )/( 2*(1-c1*z(2)) ) ...
+    - ( 2*c1*z(3) )/( 2*(C-c1*z(2)+1) )   ];
 
 % Boundary conditions
 
 BC = @(za,zb)[  za(1) - 24/(2*c1*a^3)  ;  zb(1)  ; ...
-    za(2) + 3*24./(c1*a^4)   ];
+    za(2) + 3*24./(2*c1*a^4)   ];
 
 % Initial conditions
     
-zint = @(x)[  0  ;  0  ;   0];
+zint = @(x)[   10 ;  0  ;   0];
 
 % Initialise solution
 
-solint=bvpinit(a:deltaeta:b,zint);
+solint=bvpinit(a:deltaeta/10:b,zint);
 
 % Solve with bvp4c
 
@@ -118,8 +114,8 @@ eta=a:deltaeta/5:b;
 figure('position', [0,0,800,800]); 
 plot(eta,c1*baseU,'LineWidth',2); 
 set(gca,'Fontsize',20)
-ylabel('Vel. in adj. region, $U_1$','Interpreter', 'LaTex','Fontsize',40)
-xlabel('Wall layer variable, $\zeta$','Interpreter', 'LaTex','Fontsize',40)
+ylabel('Temp. adj. func, $G$','Interpreter', 'LaTex','Fontsize',40)
+xlabel('Wall layer variable, $\eta$','Interpreter', 'LaTex','Fontsize',40)
 xlim([a,b])
 grid on
 
