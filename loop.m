@@ -40,8 +40,8 @@
 % intbaseT integral for Q term in DE
 %
 
-function [eigval H1] = loop(eigval,a,b,deltaeta,rayleigh,baseT,...
-    baseTdash,baseU,baseUdash,baseUdashdash,gamma,Tb,B,C,shoot1,c,beta,tol)
+function [eigval H1] = loop(eigval,a,b,deltaeta,rayleigh,baseU,...
+    baseUdash,baseUdashdash,gamma,Tb,B,C,c,beta,tol)
 
     % Initialise vectors
     
@@ -59,12 +59,12 @@ function [eigval H1] = loop(eigval,a,b,deltaeta,rayleigh,baseT,...
         
         % Runge kutta inwards
         
-        [eta, F1] = RK(a,b,deltaeta,a1,rayleigh,baseT,baseTdash,baseU,...
+        [eta, F1] = RK(a,b,deltaeta,a1,rayleigh,baseU,...
         baseUdash,baseUdashdash,gamma,Tb,shoot1,c,beta);
     
         % Boundary condition constraints
         
-        H1=F1(2,1) + (9/a^4 + 2/a + B*((shoot1^2+beta^2)^0.5)/(a^(3-sqrt(7))) ...
+        H1=F1(2,1) + (-9/a^4 + 2/a + B*((shoot1^2+beta^2)^0.5)/(a^(3-sqrt(7))) ...
             + 2*C*((shoot1^2+beta^2)^0.5))*F1(1,1);
         
         H2=F1(2,end) + ((shoot1^2+beta^2)^0.5)*F1(1,end);

@@ -51,13 +51,13 @@ function [eta, p] = shooting_rayleigh3(rayleigh,deltaeta,a,b,beta)
 
     % Parameters and base flow should really be put into funtion 
 
-    gamma=1.4; Pr=1; C=0.509; Tb=1; D=1; etab=1;
+    gamma=1.4; Pr=1; C=0.509; Tb=1; D=1; etab=a;
     B=-1.81447; c=-0.993937;
 
      % Solve for the base flow 
     
-    [~,baseT,baseTdash,baseU,baseUdash,baseUdashdash] ...
-        = baseflow(C,Pr,D,etab,deltaeta,a,b);
+    [~,baseU,baseUdash,baseUdashdash] ...
+        = baseflow(C,Pr,D,deltaeta,a,b);
     
     % Begin time
 
@@ -79,7 +79,7 @@ function [eta, p] = shooting_rayleigh3(rayleigh,deltaeta,a,b,beta)
         
         % Runge kutta inwards
         
-        [eta, F1] = RK(a,b,deltaeta,a1,rayleigh,baseT,baseTdash,baseU,...
+        [eta, F1] = RK(a,b,deltaeta,a1,rayleigh,baseU,...
         baseUdash,baseUdashdash,gamma,Tb,shoot1,c,beta);
     
         % Boundary condition constraints
@@ -130,15 +130,15 @@ diff=1;
 tol=0.1;
 while abs(diff>1e-16)
     eigvalold=eigval;
-    [eigval,H1]=loop(eigval,a,b,deltaeta,rayleigh,baseT,...
-    baseTdash,baseU,baseUdash,baseUdashdash,gamma,Tb,B,C,shoot1,c,beta,tol);
+    [eigval,H1]=loop(eigval,a,b,deltaeta,rayleigh,...
+        baseU,baseUdash,baseUdashdash,gamma,Tb,B,C,shoot1,c,beta,tol);
     diff=abs(eigvalold-eigval);
     tol=tol/10;
 end
 
 % Calculation of eigenmodes 
 
-[eta, F1] = RK(a,b,deltaeta,a1,rayleigh,baseT,baseTdash,baseU,...
+[eta, F1] = RK(a,b,deltaeta,a1,rayleigh,baseU,...
         baseUdash,baseUdashdash,gamma,Tb,shoot1,c,beta);
 H1=F1(2,1) + (9/a^4 + 2/a + B*((shoot1^2+beta^2)^0.5)/(a^(3-sqrt(7))) ...
             + 2*C*((shoot1^2+beta^2)^0.5))*F1(1,1);
