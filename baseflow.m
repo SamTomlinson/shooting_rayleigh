@@ -37,8 +37,8 @@
 
 
 
-function [eta,baseU,baseUdash,baseUdashdash,solint] = ...
-    baseflow(C,Pr,D,deltaeta,a,b)
+function [eta,baseU,baseUdash] = ...
+    baseflow(C,Pr,deltaeta,a,b)
 
 % Orig
 %dydx = @(eta,z)[  z(2)  ;  z(3)  ;  ( -eta*z(3) + ...
@@ -59,49 +59,35 @@ dydx=@(eta,z)[   z(2)   ;   z(3)   ;   ...
 % Boundary conditions
 
 BC = @(za,zb)[  za(1) - 24/(2*c1*a^3)  ;  zb(1)  ; ...
-    za(2) + 3*24./(2*c1*a^4)   ];
+    zb(2)  ];
 
 % Initial conditions
     
-zint = @(x)[   10 ;  0  ;   0];
+zint = @(x)[   0 ;  0  ;   0];
 
 % Initialise solution
 
-solint=bvpinit(a:deltaeta/10:b,zint);
+solint=bvpinit(a:deltaeta:b,zint);
 
 % Solve with bvp4c
 
 S=bvp4c(dydx,BC,solint);
 
-% dydx=@(x,z)[z(2);z(3);(-x.*z(3).*(C-c1.*z(2)+1))./(2.*(1-c1.*z(2)).^0.5) ...
-%     + (c1.*z(3))./(2.*(1-c1.*z(2))) ...
-%     - (c1.*z(3))./(C-c1.*z(2)+1)];
-% BC=@(za,zb)[za(1) - 24./(2.*c1.*2^3) ; zb(1) ; za(2)+ (3).*24./(c1.*etab.^(4))];
-% zint=@(x)[0 ; 0; 0];
-% solint=bvpinit(linspace(2,15,100),zint);
-% S=bvp4c(dydx,BC,solint);
-
 
 % Extract solutions for base flow
-    
-eta=S.x; 
-%baseT=S.y(4,:); baseTdash=S.y(5,:);
-baseU=S.y(2,:); baseUdash=S.y(3,:); baseUdashdash=S.y(3,:);
-for i=2:length(baseUdash)-1
-    baseUdashdash(i) = (baseUdash(i+1)-baseUdash(i-1))/(eta(2)-eta(1));
-end
-baseUdashdash(1)=-3*4*24/(c1*a^(5));
-baseUdashdash(end)=0;
+
+eta=S.x; baseU=S.y(2,:); baseUdash=S.y(3,:);
 
 % Interpolate for right grid size
 
-%baseT = interp1(eta,baseT,a:deltaeta/5:b,'spline');
-%baseTdash = interp1(eta,baseTdash,a:deltaeta/5:b,'spline');
-
-baseU = interp1(eta,baseU,a:deltaeta/5:b,'spline');
-baseUdash = interp1(eta,baseUdash,a:deltaeta/5:b,'spline');
-baseUdashdash = interp1(eta,baseUdashdash,a:deltaeta/5:b,'spline');
-eta=a:deltaeta/5:b;
+baseU = interp1(eta,baseU,a:deltaeta:b,'spline');
+baseUdash = interp1(eta,baseUdash,a:deltaeta:b,'spline');
+eta=a:deltaeta:b;
+    
+eta=[eta,eta(end)+deltaeta,eta(end)+2*deltaeta,eta(end)+3*deltaeta,...
+    eta(end)+4*deltaeta]; 
+%baseT=S.y(4,:); baseTdash=S.y(5,:);
+baseU=[baseU,0,0,0,0]; baseUdash=[baseUdash,0,0,0,0];
 
 % figure('position', [0,0,800,800]); 
 % plot(eta,baseT,'LineWidth',2); 
@@ -111,8 +97,9 @@ eta=a:deltaeta/5:b;
 % xlim([a,b])
 % grid on
 % 
+
 figure('position', [0,0,800,800]); 
-plot(eta,c1*baseU,'LineWidth',2); 
+plot(eta,c1*baseU*(450/150000),'LineWidth',2); 
 set(gca,'Fontsize',20)
 ylabel('Temp. adj. func, $G$','Interpreter', 'LaTex','Fontsize',40)
 xlabel('Wall layer variable, $\eta$','Interpreter', 'LaTex','Fontsize',40)

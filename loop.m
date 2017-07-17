@@ -41,7 +41,7 @@
 %
 
 function [eigval H1] = loop(eigval,a,b,deltaeta,rayleigh,baseU,...
-    baseUdash,baseUdashdash,gamma,Tb,B,C,c,beta,tol)
+    baseUdash,gamma,Tb,B,C,c,beta,tol)
 
     % Initialise vectors
     
@@ -53,14 +53,14 @@ function [eigval H1] = loop(eigval,a,b,deltaeta,rayleigh,baseU,...
     
         % Far field boudary condition 
         
-        a1 = [exp(-((shoot1^2+beta^2)^0.5)*b),...
-            -((shoot1^2+beta^2)^0.5)*exp(-((shoot1^2+beta^2)^0.5)*b)];
-        %a2 = [exp(-khat*A^2/(3*a^3)), khat*A^2/(a^4)*exp(-khat*A^2/(3*a^3))];
-        
+        w=-((shoot1^2+beta^2)^0.5);
+        a1 = [exp(w*b),w*exp(w*b)];
+        a2 = [exp(w*(b+deltaeta)),w*exp(w*(b+deltaeta))];
+        a3 = [exp(w*(b+2*deltaeta)),w*exp(w*(b+2*deltaeta))];
+        a4 = [exp(w*(b+3*deltaeta)),w*exp(w*(b+3*deltaeta))];        
         % Runge kutta inwards
-        
-        [eta, F1] = RK(a,b,deltaeta,a1,rayleigh,baseU,...
-        baseUdash,baseUdashdash,gamma,Tb,shoot1,c,beta);
+        [~, F1] = AM(a,b,deltaeta,a1,a2,a3,a4,rayleigh,baseU,...
+        baseUdash,gamma,Tb,shoot1,c,beta);
     
         % Boundary condition constraints
         
@@ -88,5 +88,5 @@ end
 
 eigs=eigvec(zerIdx);
 vecs=vec(zerIdx);
-eigval=eigs(1);
+eigval=eigs(1)
 vec=vecs(1);

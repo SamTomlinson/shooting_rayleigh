@@ -51,13 +51,15 @@ function [eta, p] = shooting_rayleigh3(rayleigh,deltaeta,a,b,beta)
 
     % Parameters and base flow should really be put into funtion 
 
-    gamma=1.4; Pr=1; C=0.509; Tb=1; D=1; etab=a;
+    gamma=1.4; Pr=1; C=0.509; Tb=1;
     B=-1.81447; c=-0.993937;
 
      % Solve for the base flow 
     
-    [~,baseU,baseUdash,baseUdashdash] ...
-        = baseflow(C,Pr,D,deltaeta,a,b);
+    [~,baseU,baseUdash] ...
+        = baseflow(C,Pr,deltaeta,a,b);
+    
+    baseU;
     
     % Begin time
 
@@ -69,23 +71,24 @@ function [eta, p] = shooting_rayleigh3(rayleigh,deltaeta,a,b,beta)
 
     % Loop through different alpha values
     
-    for shoot1=-1:0.1:1
+    for shoot1=0.1:0.01:0.4
     
         % Far field boudary condition 
-        
-        a1 = [exp(-((shoot1^2+beta^2)^0.5)*b),...
-            -((shoot1^2+beta^2)^0.5)*exp(-((shoot1^2+beta^2)^0.5)*b)];
-        %a2 = [exp(-khat*A^2/(3*a^3)), khat*A^2/(a^4)*exp(-khat*A^2/(3*a^3))];
+        w=-((shoot1^2+beta^2)^0.5);
+        a1 = [exp(w*b),w*exp(w*b)];
+        a2 = [exp(w*(b+deltaeta)),w*exp(w*(b+deltaeta))];
+        a3 = [exp(w*(b+2*deltaeta)),w*exp(w*(b+2*deltaeta))];
+        a4 = [exp(w*(b+3*deltaeta)),w*exp(w*(b+3*deltaeta))];
         
         % Runge kutta inwards
         
-        [eta, F1] = RK(a,b,deltaeta,a1,rayleigh,baseU,...
-        baseUdash,baseUdashdash,gamma,Tb,shoot1,c,beta);
+        [~, F1] = AM(a,b,deltaeta,a1,a2,a3,a4,rayleigh,baseU,...
+        baseUdash,gamma,Tb,shoot1,c,beta);
     
         % Boundary condition constraints
         
         H1=F1(2,1) + (-9/a^4 + 2/a + B*((shoot1^2 + beta^2)^0.5)/(a^(3-sqrt(7))) ...
-            + 2*C*((shoot1^2+beta^2)^0.5))*F1(1,1)
+            + 2*C*((shoot1^2+beta^2)^0.5))*F1(1,1);
         
         H2=F1(2,end) + ((shoot1^2 + beta^2)^0.5)*F1(1,end);
    
@@ -106,7 +109,6 @@ function [eta, p] = shooting_rayleigh3(rayleigh,deltaeta,a,b,beta)
     ylabel('Near field error, $H(\hat{\alpha})$','Interpreter',...
         'LaTex','Fontsize',40)
     xlabel('Wave no., $\hat{\alpha}$','Interpreter', 'LaTex','Fontsize',40)
-    %xlim([-10,10])
     %ylim([-1,1])
     grid on
     hold off;
@@ -127,28 +129,36 @@ vec=vecs(1);
 
 % Improve accuracy 
 diff=1;
-tol=0.1;
+tol=0.01;
 while abs(diff>1e-16)
     eigvalold=eigval;
     [eigval,H1]=loop(eigval,a,b,deltaeta,rayleigh,...
-        baseU,baseUdash,baseUdashdash,gamma,Tb,B,C,shoot1,c,beta,tol);
+        baseU,baseUdash,gamma,Tb,B,C,c,beta,tol);
     diff=abs(eigvalold-eigval);
     tol=tol/10;
 end
 
 % Calculation of eigenmodes 
 
-[eta, F1] = RK(a,b,deltaeta,a1,rayleigh,baseU,...
-        baseUdash,baseUdashdash,gamma,Tb,shoot1,c,beta);
-H1=F1(2,1) + (9/a^4 + 2/a + B*((shoot1^2+beta^2)^0.5)/(a^(3-sqrt(7))) ...
-            + 2*C*((shoot1^2+beta^2)^0.5))*F1(1,1);
-H2=F1(2,end) + ((shoot1^2+beta^2)^0.5)*F1(1,end);
+ % Far field boudary condition 
+w=-((eigval^2+beta^2)^0.5);
+a1 = [exp(w*b),w*exp(w*b)];
+a2 = [exp(w*(b+deltaeta)),w*exp(w*(b+deltaeta))];
+a3 = [exp(w*(b+2*deltaeta)),w*exp(w*(b+2*deltaeta))];
+a4 = [exp(w*(b+3*deltaeta)),w*exp(w*(b+3*deltaeta))];        
+% Runge kutta inwards
+[eta, F1] = AM(a,b,deltaeta,a1,a2,a3,a4,rayleigh,baseU,...
+        baseUdash,gamma,Tb,eigval,c,beta);
+        
+H1=F1(2,1) + (-9/a^4 + 2/a + B*((shoot1^2+beta^2)^0.5)/(a^(3-sqrt(7))) ...
+            + 2*C*((eigval^2+beta^2)^0.5))*F1(1,1)
+H2=F1(2,end) + ((eigval^2+beta^2)^0.5)*F1(1,end)
 p=F1;
 
 % Plotting of eigenomdes (if running evvsk % out)
 
 figure('position', [0,0,800,800]); 
-plot(eta,p(1,:),'LineWidth',2); 
+plot(eta,p(1,length(eta)),'LineWidth',2); 
 set(gca,'Fontsize',20)
 ylabel('Vel. in the temp. adj. region $p_0$','Interpreter',...
       'LaTex','Fontsize',40)
