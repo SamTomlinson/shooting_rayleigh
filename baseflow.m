@@ -85,27 +85,27 @@ baseUdashdash(end)=0;
 
 % Interpolate for right grid size
 
-baseT = interp1(eta,baseT,a:deltaeta:b,'spline');
-baseTdash = interp1(eta,baseTdash,a:deltaeta:b,'spline');
-baseU = interp1(eta,baseU,a:deltaeta:b,'spline');
-baseUdash = interp1(eta,baseUdash,a:deltaeta:b,'spline');
-baseUdashdash = interp1(eta,baseUdashdash,a:deltaeta:b,'spline');
-eta=a:deltaeta:b;
+baseT = interp1(eta,baseT,a:deltaeta/5:b,'spline');
+baseTdash = interp1(eta,baseTdash,a:deltaeta/5:b,'spline');
+baseU = interp1(eta,baseU,a:deltaeta/5:b,'spline');
+baseUdash = interp1(eta,baseUdash,a:deltaeta/5:b,'spline');
+baseUdashdash = interp1(eta,baseUdashdash,a:deltaeta/5:b,'spline');
+eta=a:deltaeta/5:b;
 
-figure('position', [0,0,800,800]); 
-plot(eta,baseT,'LineWidth',2); 
-set(gca,'Fontsize',20)
-ylabel('Temp. in adj. region, $T_1$','Interpreter', 'LaTex','Fontsize',40)
-xlabel('Wall layer variable, $\eta$','Interpreter', 'LaTex','Fontsize',40)
-xlim([a,b])
-grid on
-
-figure('position', [0,0,800,800]); 
-plot(eta,baseU,'LineWidth',2); 
-set(gca,'Fontsize',20)
-ylabel('Vel. in adj. region, $U_1$','Interpreter', 'LaTex','Fontsize',40)
-xlabel('Wall layer variable, $\zeta$','Interpreter', 'LaTex','Fontsize',40)
-xlim([a,b])
-grid on
+% figure('position', [0,0,800,800]); 
+% plot(eta,baseT,'LineWidth',2); 
+% set(gca,'Fontsize',20)
+% ylabel('Temp. in adj. region, $T_1$','Interpreter', 'LaTex','Fontsize',40)
+% xlabel('Wall layer variable, $\eta$','Interpreter', 'LaTex','Fontsize',40)
+% xlim([a,b])
+% grid on
+% 
+% figure('position', [0,0,800,800]); 
+% plot(eta,baseU,'LineWidth',2); 
+% set(gca,'Fontsize',20)
+% ylabel('Vel. in adj. region, $U_1$','Interpreter', 'LaTex','Fontsize',40)
+% xlabel('Wall layer variable, $\zeta$','Interpreter', 'LaTex','Fontsize',40)
+% xlim([a,b])
+% grid on
 
     
