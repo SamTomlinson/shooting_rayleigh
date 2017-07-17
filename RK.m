@@ -41,7 +41,7 @@
 
 
 function [eta, p] = RK(a,b,deltaeta,bcs,rayleigh,baseT,baseTdash,baseU,...
-        baseUdash,baseUdashdash,gamma,Tb,shoot1,khat)
+        baseUdash,baseUdashdash,gamma,Tb,shoot1,c,beta)
     
     % Set up variables used in RK preallocate for speed
     
@@ -57,19 +57,19 @@ function [eta, p] = RK(a,b,deltaeta,bcs,rayleigh,baseT,baseTdash,baseU,...
         k;
         
         k1 = rayleigh(eta(k+1),p(:,k+1),baseT(j-1),baseTdash(j-1),baseU(j-1),...
-        baseUdash(j-1),baseUdashdash(j-1),gamma,Tb,shoot1,khat);
+        baseUdash(j-1),baseUdashdash(j-1),gamma,Tb,shoot1,c,beta);
     
         k2 = rayleigh(eta(k+1)-0.5*deltaeta,p(:,k+1)-0.5*deltaeta*k1',baseT(j-2),...
             baseTdash(j-2),baseU(j-2),baseUdash(j-2),baseUdashdash(j-2),...
-            gamma,Tb,shoot1,khat);
+            gamma,Tb,shoot1,c,beta);
         
         k3 = rayleigh(eta(k+1)-0.5*deltaeta,p(:,k+1)-0.5*deltaeta*k2',baseT(j-3),...
             baseTdash(j-3),baseU(j-3),baseUdash(j-3),baseUdashdash(j-3),...
-            gamma,Tb,shoot1,khat);
+            gamma,Tb,shoot1,c,beta);
         
         k4 = rayleigh(eta(k+1)-deltaeta,p(:,k+1)-deltaeta*k3',baseT(j-4),baseTdash(j-4),...
             baseU(j-4),baseUdash(j-4),baseUdashdash(j-4),...
-            gamma,Tb,shoot1,khat);
+            gamma,Tb,shoot1,c,beta);
         p(:,k)=p(:,k+1)-deltaeta*(k1'+2*k2'+2*k3'+k4')/6;
     end
     
