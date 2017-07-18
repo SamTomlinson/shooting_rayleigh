@@ -71,7 +71,7 @@ function [eta, p] = shooting_rayleigh3(rayleigh,deltaeta,a,b,beta)
 
     % Loop through different alpha values
     
-    for shoot1=0.01:0.1:1
+    for shoot1=0.1:0.01:1
     
         % Far field boudary condition 
         w=-((shoot1^2+beta^2)^0.5);
@@ -133,10 +133,10 @@ vec=vecs(1);
 
 %Improve accuracy 
 diff=1;
-tol=0.1;
+tol=0.01;
 while abs(diff>1e-16)
-    eigvalold=eigval;
-    [eigval,H1]=loop(eigval,a,b,deltaeta,rayleigh,...
+    eigvalold=eigval
+    [eigval,H1]=loop(eigvalold,a,b,deltaeta,rayleigh,...
         baseU,baseUdash,gamma,Tb,B,C,c,beta,tol);
     diff=abs(eigvalold-eigval);
     tol=tol/10;
@@ -165,10 +165,10 @@ p=F1;
 figure('position', [0,0,800,800]); 
 plot(eta,p(1:length(eta)),'LineWidth',2); 
 set(gca,'Fontsize',20)
-ylabel('Vel. in the temp. adj. region $p_0$','Interpreter',...
+ylabel('Pres. in the temp. adj. region $p_0$','Interpreter',...
       'LaTex','Fontsize',40)
 xlabel('D.H. variable, $\eta$','Interpreter', 'LaTex','Fontsize',40)
-xlim([0.1,b])
+xlim([a,b])
 ylim([0,1])
 grid on
 hold off;
