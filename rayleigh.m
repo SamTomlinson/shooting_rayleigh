@@ -36,15 +36,15 @@
 function vecq = rayleigh(~,q,baseU,...
         baseUdash,gamma,Tb,shoot1,c,beta)
 
+c1=0.5*(gamma-1)*(Tb+1);
 % Diff of q1 is q2 
 
 vecq(1) = q(2);
     
 % Diff of q2 is the rest of the system
     
-vecq(2) = 2*(0.5*(gamma-1)*(Tb+1)*baseUdash)*q(2)/...
-        ((0.5*(gamma-1)*(Tb+1)*baseU)-c) ...
-        + ((shoot1^2+beta^2)^2)*((1-(0.5*(gamma-1)*(Tb+1)*baseU))^2)*q(1);
+vecq(2) = 2*c1*baseUdash*q(2)/((c1*baseU)-c) ...
+        + ((shoot1^2+beta^2)^2)*((1-(c1*baseU))^2)*q(1);
     
     
     

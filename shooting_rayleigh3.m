@@ -71,7 +71,7 @@ function [eta, p] = shooting_rayleigh3(rayleigh,deltaeta,a,b,beta)
 
     % Loop through different alpha values
     
-    for shoot1=0.1:0.01:0.4
+    for shoot1=0.01:0.1:1
     
         % Far field boudary condition 
         w=-((shoot1^2+beta^2)^0.5);
@@ -87,8 +87,12 @@ function [eta, p] = shooting_rayleigh3(rayleigh,deltaeta,a,b,beta)
     
         % Boundary condition constraints
         
-        H1=F1(2,1) + (-9/a^4 + 2/a + B*((shoot1^2 + beta^2)^0.5)/(a^(3-sqrt(7))) ...
+        H1=F1(2,1) + (-9*((shoot1^2 + beta^2)^0.5)/a^4 + 2/a ...
+            + B*((shoot1^2 + beta^2)^0.5)/(a^(3-sqrt(7))) ...
             + 2*C*((shoot1^2+beta^2)^0.5))*F1(1,1);
+        
+        %Hposs=exp(-(((shoot1^2 + beta^2)^0.5)*((B*a^(1+sqrt(7)))/(sqrt(7)-2) ...
+        %    + 2*C*a^4 + 3))/(a^3) - 2*log(a));
         
         H2=F1(2,end) + ((shoot1^2 + beta^2)^0.5)*F1(1,end);
    
@@ -127,9 +131,9 @@ vecs=vec(zerIdx);
 eigval=eigs(1);
 vec=vecs(1);
 
-% Improve accuracy 
+%Improve accuracy 
 diff=1;
-tol=0.01;
+tol=0.1;
 while abs(diff>1e-16)
     eigvalold=eigval;
     [eigval,H1]=loop(eigval,a,b,deltaeta,rayleigh,...
@@ -150,20 +154,22 @@ a4 = [exp(w*(b+3*deltaeta)),w*exp(w*(b+3*deltaeta))];
 [eta, F1] = AM(a,b,deltaeta,a1,a2,a3,a4,rayleigh,baseU,...
         baseUdash,gamma,Tb,eigval,c,beta);
         
-H1=F1(2,1) + (-9/a^4 + 2/a + B*((shoot1^2+beta^2)^0.5)/(a^(3-sqrt(7))) ...
-            + 2*C*((eigval^2+beta^2)^0.5))*F1(1,1)
-H2=F1(2,end) + ((eigval^2+beta^2)^0.5)*F1(1,end)
+H1=F1(2,1) + (-9*((eigval^2 + beta^2)^0.5)/a^4 + 2/a ...
+            + B*((eigval^2 + beta^2)^0.5)/(a^(3-sqrt(7))) ...
+            + 2*C*((eigval^2+beta^2)^0.5))*F1(1,1);
+H2=F1(2,end) + ((eigval^2+beta^2)^0.5)*F1(1,end);
 p=F1;
 
 % Plotting of eigenomdes (if running evvsk % out)
 
 figure('position', [0,0,800,800]); 
-plot(eta,p(1,length(eta)),'LineWidth',2); 
+plot(eta,p(1:length(eta)),'LineWidth',2); 
 set(gca,'Fontsize',20)
 ylabel('Vel. in the temp. adj. region $p_0$','Interpreter',...
       'LaTex','Fontsize',40)
 xlabel('D.H. variable, $\eta$','Interpreter', 'LaTex','Fontsize',40)
 xlim([0.1,b])
+ylim([0,1])
 grid on
 hold off;
 

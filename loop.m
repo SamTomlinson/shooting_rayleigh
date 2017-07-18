@@ -64,8 +64,9 @@ function [eigval H1] = loop(eigval,a,b,deltaeta,rayleigh,baseU,...
     
         % Boundary condition constraints
         
-        H1=F1(2,1) + (-9/a^4 + 2/a + B*((shoot1^2+beta^2)^0.5)/(a^(3-sqrt(7))) ...
-            + 2*C*((shoot1^2+beta^2)^0.5))*F1(1,1);
+        H1=F1(2,1) + (-9*((eigval^2 + beta^2)^0.5)/a^4 + 2/a ...
+            + B*((eigval^2 + beta^2)^0.5)/(a^(3-sqrt(7))) ...
+            + 2*C*((eigval^2+beta^2)^0.5))*F1(1,1);
         
         H2=F1(2,end) + ((shoot1^2+beta^2)^0.5)*F1(1,end);
    
@@ -88,5 +89,5 @@ end
 
 eigs=eigvec(zerIdx);
 vecs=vec(zerIdx);
-eigval=eigs(1)
+eigval=eigs(1);
 vec=vecs(1);

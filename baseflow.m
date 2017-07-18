@@ -83,11 +83,6 @@ eta=S.x; baseU=S.y(2,:); baseUdash=S.y(3,:);
 baseU = interp1(eta,baseU,a:deltaeta:b,'spline');
 baseUdash = interp1(eta,baseUdash,a:deltaeta:b,'spline');
 eta=a:deltaeta:b;
-    
-eta=[eta,eta(end)+deltaeta,eta(end)+2*deltaeta,eta(end)+3*deltaeta,...
-    eta(end)+4*deltaeta]; 
-%baseT=S.y(4,:); baseTdash=S.y(5,:);
-baseU=[baseU,0,0,0,0]; baseUdash=[baseUdash,0,0,0,0];
 
 % figure('position', [0,0,800,800]); 
 % plot(eta,baseT,'LineWidth',2); 
