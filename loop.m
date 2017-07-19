@@ -49,7 +49,7 @@ function [eigval H1] = loop(eigval,a,b,deltaeta,rayleigh,baseU,...
 
     % Loop through different khat values
     
-    for shoot1=eigval-tol:tol/10:eigval+tol
+    for shoot1=eigval-2*tol:tol/10:eigval+2*tol
     
         % Far field boudary condition 
         
@@ -66,15 +66,19 @@ function [eigval H1] = loop(eigval,a,b,deltaeta,rayleigh,baseU,...
     
         % Boundary condition constraints
         
-        H1=F1(2,1) + (-9*((shoot1^2 + beta^2)^0.5)/a^4 + 2/a ...
-            + B*((shoot1^2 + beta^2)^0.5)/(a^(3-sqrt(7))) ...
-            + 2*C*((shoot1^2+beta^2)^0.5))*F1(1,1);
+        H1=F1(2,1) + ( (-9*((shoot1^2 + beta^2)^0.5))/a^4 + 2/a ...
+            + (B*((shoot1^2 + beta^2)^0.5))/(a^(3-sqrt(7))) ...
+            + 2*C*((shoot1^2+beta^2)^0.5) )*F1(1,1);
         
-        H2=F1(2,end) + ((shoot1^2+beta^2))*F1(1,end);
+%         Hposs=exp(-(((shoot1^2 + beta^2)^0.5)*((B*a^(1+sqrt(7)))/(sqrt(7)-2) ...
+%            + 2*C*a^4 + 3))/(a^3) - 2*log(a))
+        
+        H2=F1(2,end) + (shoot1^2 + beta^2)*F1(1,end);
+   
    
         % Vector of H error and ks
         
-        vec=[H1,vec]; eigvec=[shoot1,eigvec];
+        vec=[vec,H1]; eigvec=[eigvec,shoot1];
     
     end
     

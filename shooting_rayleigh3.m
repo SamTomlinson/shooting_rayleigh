@@ -52,7 +52,7 @@ function [eta, p,eigval] = shooting_rayleigh3(rayleigh,deltaeta,a,b,beta)
     % Parameters and base flow should really be put into funtion 
 
     gamma=1.4; Pr=1; C=0.509; Tb=1;
-    B=-1.81447; c=-0.993937;
+    B=-1.81; c=-0.99;
 
      % Solve for the base flow 
     
@@ -131,18 +131,21 @@ end
 
 eigs=eigvec(zerIdx);
 vecs=vec(zerIdx);
-eigval=eigs(1);
+eigval=eigs(1)
 vec=vecs(1);
 
 %Improve accuracy 
 diff=1;
-tol=0.1;
-while abs(diff>1e-16)
+tol=deltaeta*10;
+k=1;
+while abs(k<16)
+    k
     eigvalold=eigval
     [eigval,H1]=loop(eigvalold,a,b,deltaeta,rayleigh,...
         baseU,baseUdash,gamma,Tb,B,C,c,beta,tol);
     diff=abs(eigvalold-eigval);
     tol=tol/10;
+    k=k+1;
 end
 
 % Calculation of eigenmodes 
@@ -169,16 +172,19 @@ p=F1;
 
 % Plotting of eigenomdes (if running evvsk % out)
 
-figure('position', [0,0,800,800]); 
-plot(eta,p(1:length(eta)),'LineWidth',2); 
-set(gca,'Fontsize',20)
-ylabel('Pres. in the temp. adj. region $p_0$','Interpreter',...
-      'LaTex','Fontsize',40)
-xlabel('D.H. variable, $\eta$','Interpreter', 'LaTex','Fontsize',40)
-xlim([a,b])
-%ylim([0,1])
-grid on
-hold off;
+% figure('position', [0,0,800,800]); 
+% plot(eta,p(1:length(eta)),'LineWidth',2); 
+% set(gca,'Fontsize',20)
+% ylabel('Pres. in the temp. adj. region $p_0$','Interpreter',...
+%       'LaTex','Fontsize',40)
+% xlabel('D.H. variable, $\eta$','Interpreter', 'LaTex','Fontsize',40)
+% xlim([a,b])
+% %ylim([0,1])
+% grid on
+% hold off;
 
- 
+vq1 = interp1(eta,p(1:length(eta)),a:10*deltaeta:b);
+eta2=a:10*deltaeta:b;
+plot(eta2,vq1)
+
 end
