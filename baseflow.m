@@ -93,12 +93,14 @@ eta=a:deltaeta:b;
 % grid on
 % 
 
-figure('position', [0,0,800,800]); 
-plot(eta,c1*baseU,'LineWidth',2); 
-set(gca,'Fontsize',20)
-ylabel('Temp. adj. func, $G$','Interpreter', 'LaTex','Fontsize',40)
-xlabel('Wall layer variable, $\eta$','Interpreter', 'LaTex','Fontsize',40)
-xlim([a,b])
-grid on
+
+
+% figure('position', [0,0,800,800]); 
+% plot(eta,c1*baseU,'LineWidth',2); 
+% set(gca,'Fontsize',20)
+% ylabel('Temp. adj. func, $G$','Interpreter', 'LaTex','Fontsize',40)
+% xlabel('Wall layer variable, $\eta$','Interpreter', 'LaTex','Fontsize',40)
+% xlim([a,b])
+% grid on
 
     

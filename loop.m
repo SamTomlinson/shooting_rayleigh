@@ -58,9 +58,11 @@ function [eigval H1] = loop(eigval,a,b,deltaeta,rayleigh,baseU,...
         a2 = [exp(w*(b+deltaeta)),w*exp(w*(b+deltaeta))];
         a3 = [exp(w*(b+2*deltaeta)),w*exp(w*(b+2*deltaeta))];
         a4 = [exp(w*(b+3*deltaeta)),w*exp(w*(b+3*deltaeta))];        
-        % Runge kutta inwards
+        % Iterate inwards
         [~, F1] = AM(a,b,deltaeta,a1,a2,a3,a4,rayleigh,baseU,...
         baseUdash,gamma,Tb,shoot1,c,beta);
+%         [~, F1] = RK(a,b,deltaeta,a1,rayleigh,baseU,...
+%         baseUdash,gamma,Tb,shoot1,c,beta);
     
         % Boundary condition constraints
         
@@ -68,7 +70,7 @@ function [eigval H1] = loop(eigval,a,b,deltaeta,rayleigh,baseU,...
             + B*((shoot1^2 + beta^2)^0.5)/(a^(3-sqrt(7))) ...
             + 2*C*((shoot1^2+beta^2)^0.5))*F1(1,1);
         
-        H2=F1(2,end) + ((shoot1^2+beta^2)^0.5)*F1(1,end);
+        H2=F1(2,end) + ((shoot1^2+beta^2))*F1(1,end);
    
         % Vector of H error and ks
         

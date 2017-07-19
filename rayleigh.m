@@ -44,7 +44,7 @@ vecq(1) = q(2);
 % Diff of q2 is the rest of the system
     
 vecq(2) = 2*c1*baseUdash*q(2)/((c1*baseU)-c) ...
-        + ((shoot1^2+beta^2)^2)*((1-(c1*baseU))^2)*q(1);
+        + ((shoot1^2+beta^2))*((1-(c1*baseU))^2)*q(1);
     
     
     
