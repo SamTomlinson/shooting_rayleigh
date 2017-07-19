@@ -57,7 +57,7 @@ function [eta, p] = shooting_rayleigh3(rayleigh,deltaeta,a,b,beta)
      % Solve for the base flow 
     
     [~,baseU,baseUdash] ...
-        = baseflow(C,Pr,deltaeta,a,b);
+        = baseflow(C,Pr,deltaeta,a,b+4*deltaeta);
     
     % Begin time
 
@@ -69,7 +69,7 @@ function [eta, p] = shooting_rayleigh3(rayleigh,deltaeta,a,b,beta)
 
     % Loop through different alpha values
     
-    for shoot1=0.1:0.1:1
+    for shoot1=0.1:0.01:1
     
         % Far field boudary condition extra for multistep methods
         w=-((shoot1^2+beta^2)^0.5);

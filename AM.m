@@ -55,11 +55,9 @@ function [eta, p] = AM(a,b,deltaeta,bcs1,bcs2,bcs3,bcs4,rayleigh,baseU,...
     
     % Additional points for base flow
     
-    baseU=[baseU,0,0,0,0]; baseUdash=[baseUdash,0,0,0,0];
+    %baseU=[baseU,0,0,0,0]; baseUdash=[baseUdash,0,0,0,0];
     
-    
-    % RK from far boundary in towards zero
-    
+    % AB from far boundary in towards zero
     for k = n-4:-1:1
         k;
         k+1;
