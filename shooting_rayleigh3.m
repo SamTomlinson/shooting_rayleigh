@@ -59,8 +59,6 @@ function [eta, p] = shooting_rayleigh3(rayleigh,deltaeta,a,b,beta)
     [~,baseU,baseUdash] ...
         = baseflow(C,Pr,deltaeta,a,b);
     
-    baseU;
-    
     % Begin time
 
     tic;
@@ -71,16 +69,16 @@ function [eta, p] = shooting_rayleigh3(rayleigh,deltaeta,a,b,beta)
 
     % Loop through different alpha values
     
-    for shoot1=0.1:0.01:1
+    for shoot1=0.1:0.1:1
     
-        % Far field boudary condition 
+        % Far field boudary condition extra for multistep methods
         w=-((shoot1^2+beta^2)^0.5);
         a1 = [exp(w*b),w*exp(w*b)];
         a2 = [exp(w*(b+deltaeta)),w*exp(w*(b+deltaeta))];
         a3 = [exp(w*(b+2*deltaeta)),w*exp(w*(b+2*deltaeta))];
         a4 = [exp(w*(b+3*deltaeta)),w*exp(w*(b+3*deltaeta))];
         
-        % Runge kutta inwards
+        % Adams Moulten inwards
         
         [~, F1] = AM(a,b,deltaeta,a1,a2,a3,a4,rayleigh,baseU,...
         baseUdash,gamma,Tb,shoot1,c,beta);

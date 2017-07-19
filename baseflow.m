@@ -63,7 +63,7 @@ BC = @(za,zb)[  za(1) - 24/(2*c1*a^3)  ;  zb(1)  ; ...
 
 % Initial conditions
     
-zint = @(x)[   0 ;  0  ;   0];
+zint = @(z)[ 0 ;  0  ;   0];
 
 % Initialise solution
 
@@ -94,7 +94,7 @@ eta=a:deltaeta:b;
 % 
 
 figure('position', [0,0,800,800]); 
-plot(eta,c1*baseU*(450/150000),'LineWidth',2); 
+plot(eta,c1*baseU,'LineWidth',2); 
 set(gca,'Fontsize',20)
 ylabel('Temp. adj. func, $G$','Interpreter', 'LaTex','Fontsize',40)
 xlabel('Wall layer variable, $\eta$','Interpreter', 'LaTex','Fontsize',40)
