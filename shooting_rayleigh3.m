@@ -185,6 +185,7 @@ p=F1;
 
 vq1 = interp1(eta,p(1:length(eta)),a:10*deltaeta:b);
 eta2=a:10*deltaeta:b;
+figure()
 plot(eta2,vq1)
 
 end
